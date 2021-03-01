@@ -31,14 +31,24 @@ int main() {
 	* (volatile uint32_t *) 0x500fd000 = 0xffffffff;
 
 	// Control
-	int max = 128;
+	int ii = -1;
 	int i = 90;
 	while (1)
-		for (int i = 0; i < max; i++) {
-			int ii = (i + max - 1) % max;
-			* (volatile uint32_t *) (0x500ff214 + 4 * i) = 0x7fe42108;
-			* (volatile uint32_t *) (0x500ff214 + 4 * ii) = 0x7fe42109;
+		for (int i = 0; i < 128; i++) {
+			{
+				int x = 16 + i % 16 * 16;
+				int y = 16 + i / 16 * 16;
+				* (volatile uint32_t *) (0x500ff214 + 4 * i) =
+					0x7fe00000 | (y << 12) | (x << 2);
+			}
+			if (ii != -1) {
+				int x = 16 + ii % 16 * 16;
+				int y = 16 + ii / 16 * 16;
+				* (volatile uint32_t *) (0x500ff214 + 4 * ii) =
+					0x7fe00001 | (y << 12) | (x << 2);
+			}
 			for (int i = 0; i < 0x10000; i++);
+			ii = i;
 		}
 
     while (1) {
