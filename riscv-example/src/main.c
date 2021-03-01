@@ -24,6 +24,22 @@ int main() {
     VIDEO_MEMORY[11] = '!';
     VIDEO_MEMORY[12] = 'X';
 
+	// Mode
+	*(uint32_t*) 0x500FF414 = 0x1;
+
+	// Palette
+	* (volatile uint32_t *) 0x500fd000 = 0xffffffff;
+
+	// Control
+	int max = 128;
+	int i = 90;
+	while (1)
+		for (int i = 0; i < max; i++) {
+			int ii = (i + max - 1) % max;
+			* (volatile uint32_t *) (0x500ff214 + 4 * i) = 0x7fe42108;
+			* (volatile uint32_t *) (0x500ff214 + 4 * ii) = 0x7fe42109;
+			for (int i = 0; i < 0x10000; i++);
+		}
 
     while (1) {
         int c = a + b + global;
